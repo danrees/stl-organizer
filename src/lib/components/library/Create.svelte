@@ -3,12 +3,16 @@
   import {open} from "@tauri-apps/api/dialog";
   import {path} from "@tauri-apps/api";
     import { FileButton } from "@skeletonlabs/skeleton";
+    import { invoke } from "@tauri-apps/api/tauri";
 
   let name: string | undefined;
   let libPath: string | null;
 
   const dirPicker = async () => {
-    const resp = await open({directory: true, multiple: false});
+    console.log("picking directory");
+     const resp = await open({directory: true});
+    //const resp = await invoke("pick_directory", {}) as string;
+   console.log(resp)
     if (Array.isArray(resp)) {
       return
     }
@@ -21,12 +25,12 @@
   }
 </script>
 
-<div>
-  <FileButton on:click={async () => dirPicker()} name="Directory"></FileButton> 
-  <input type="text" bind:value={name}/>
+<div class="space-y-5">
+  <input class="input" type="text" bind:value={name}/>
+  <button class="btn " on:click={async () => await dirPicker()} name="Directory">Directory</button> 
 </div>
 
-<div><button on:click={async () => { 
+<div><button class="btn variant-soft-primary" on:click={async () => { 
   if(name && libPath) {
   await save(name, libPath) 
   }

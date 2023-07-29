@@ -4,7 +4,9 @@
 use surrealdb::{engine::local::File, Surreal};
 use tauri::Manager;
 
-use crate::stl_library::{delete_library, list_libraries, save_library, scan_library};
+use crate::stl_library::{
+    delete_library, list_libraries, pick_directory, save_library, scan_library,
+};
 
 mod stl_library;
 
@@ -24,7 +26,8 @@ fn main() {
             scan_library,
             list_libraries,
             save_library,
-            delete_library
+            delete_library,
+            pick_directory,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

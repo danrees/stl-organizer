@@ -14,7 +14,13 @@
   <ul>
       {#each libs as lib}
         
-    <li>{lib.name}</li>
+        <li>
+          <div>
+
+          <span class="text-lg">{lib.name}</span>
+            <span class="text-sm text-primary-400">{lib.path}</span>
+          </div>
+        </li>
       {/each}
   </ul>
   {/await}

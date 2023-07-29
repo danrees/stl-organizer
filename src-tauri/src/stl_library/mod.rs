@@ -3,7 +3,7 @@ use std::ffi::OsString;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use surrealdb::{engine::local::Db, sql::Thing, Surreal};
-use tauri::State;
+use tauri::{api::dialog::blocking::FileDialogBuilder, State};
 use walkdir::WalkDir;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -133,4 +133,12 @@ pub async fn scan_library(
     }
 
     Ok(())
+}
+
+#[tauri::command]
+pub async fn pick_directory() -> Result<String, String> {
+    match FileDialogBuilder::new().pick_folder() {
+        Some(path) => Ok(path.as_os_str().to_string_lossy().to_string()),
+        None => Err(String::from("could not get path from system")),
+    }
 }
