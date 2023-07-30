@@ -1,36 +1,37 @@
 <script lang="ts">
-  import type{  STLLibrary} from "$lib/stl-library"
-  import {appWindow, } from "@tauri-apps/api/window"
-    import { onDestroy, onMount } from "svelte";
+  import type { STLLibrary } from "$lib/stl-library";
+  import { appWindow } from "@tauri-apps/api/window";
+  import { onDestroy, onMount } from "svelte";
 
   export let libraries: STLLibrary[];
   let unlisten: () => void;
   onMount(async () => {
-    unlisten = await appWindow.listen<STLLibrary>("library-save", ({payload}) => {
-      libraries = [...libraries, payload] 
-    });
-  })
+    unlisten = await appWindow.listen<STLLibrary>(
+      "library-save",
+      ({ payload }) => {
+        libraries = [...libraries, payload];
+      },
+    );
+  });
   onDestroy(async () => {
     if (unlisten) {
-      unlisten()
+      unlisten();
     }
-  })
+  });
 </script>
 
-
 <div>
-
-  <ul>
-      {#each libraries as lib}
-        
-        <li>
-          <div>
-
-          <span class="text-lg">{lib.name}</span>
-            <span class="text-sm text-primary-400">{lib.path}</span>
-          </div>
-        </li>
-      {/each}
-  </ul>
+  <dl class="list-dl">
+    {#each libraries as lib}
+      <div class="flex bg-surface-100-800-token">
+        <span class="flex-auto">
+          <dt class="text-lg">{lib.name}</dt>
+          <dd class="text-sm text-primary-400">{lib.path}</dd>
+        </span>
+        <span>
+          <button class="btn btn-sm variant-filled-warning">Delete</button>
+        </span>
+      </div>
+    {/each}
+  </dl>
 </div>
-
