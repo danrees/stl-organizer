@@ -28,7 +28,7 @@ import {AppBar, AppShell, Drawer, drawerStore} from "@skeletonlabs/skeleton";
                 </svg>
             </span>
         </button>
-        <strong class="text-xl uppercase">Skeleton</strong>
+          <strong class="text-xl uppercase"><a href="/">STL Organizer</a></strong>
     </div>
 </svelte:fragment>
     </AppBar>

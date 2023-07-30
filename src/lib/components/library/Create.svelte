@@ -9,10 +9,7 @@
   let libPath: string | null;
 
   const dirPicker = async () => {
-    console.log("picking directory");
      const resp = await open({directory: true});
-    //const resp = await invoke("pick_directory", {}) as string;
-   console.log(resp)
     if (Array.isArray(resp)) {
       return
     }
@@ -22,12 +19,14 @@
 
   const save = async (name: string, path: string) => {
     await saveLibrary(name, path);
+    name = "";
+    libPath = "";
   }
 </script>
 
 <div class="space-y-5">
   <input class="input" type="text" bind:value={name}/>
-  <button class="btn " on:click={async () => await dirPicker()} name="Directory">Directory</button> 
+  <button class="btn variant-soft-primary" on:click={async () => await dirPicker()} name="Directory">Directory</button> 
 </div>
 
 <div><button class="btn variant-soft-primary" on:click={async () => { 

@@ -3,10 +3,10 @@ use std::ffi::OsString;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use surrealdb::{engine::local::Db, sql::Thing, Surreal};
-use tauri::{api::dialog::blocking::FileDialogBuilder, State};
+use tauri::{api::dialog::blocking::FileDialogBuilder, State, Window};
 use walkdir::WalkDir;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Library {
     id: Option<Thing>,
     name: String,
@@ -33,6 +33,7 @@ pub async fn save_library(
     name: &str,
     path: &str,
     db: State<'_, Surreal<Db>>,
+    window: Window,
 ) -> Result<Library, String> {
     let l: Library = db
         .create("library")
@@ -43,6 +44,7 @@ pub async fn save_library(
         })
         .await
         .map_err(|e| e.to_string())?;
+    window.emit("library-save", &l).map_err(|e| e.to_string())?;
     Ok(l)
 }
 

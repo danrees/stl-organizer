@@ -1,18 +1,27 @@
 <script lang="ts">
-  import {listLibraries, type STLLibrary} from "$lib/stl-library"
+  import type{  STLLibrary} from "$lib/stl-library"
+  import {appWindow, } from "@tauri-apps/api/window"
+    import { onDestroy, onMount } from "svelte";
 
-
-  const libraries: Promise<STLLibrary[]> = listLibraries();
+  export let libraries: STLLibrary[];
+  let unlisten: () => void;
+  onMount(async () => {
+    unlisten = await appWindow.listen<STLLibrary>("library-save", ({payload}) => {
+      libraries = [...libraries, payload] 
+    });
+  })
+  onDestroy(async () => {
+    if (unlisten) {
+      unlisten()
+    }
+  })
 </script>
 
 
 <div>
-  {#await libraries}
-<div>Loading</div>
-    {:then libs}    
 
   <ul>
-      {#each libs as lib}
+      {#each libraries as lib}
         
         <li>
           <div>
@@ -23,6 +32,5 @@
         </li>
       {/each}
   </ul>
-  {/await}
 </div>
 
