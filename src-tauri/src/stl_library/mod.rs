@@ -1,4 +1,4 @@
-use std::ffi::OsString;
+use std::{ffi::OsString, ops::Deref};
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -7,10 +7,33 @@ use tauri::{api::dialog::blocking::FileDialogBuilder, State, Window};
 use walkdir::WalkDir;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TSLibrary {
+    pub id: String,
+    pub name: String,
+    pub path: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Library {
-    id: Option<Thing>,
+    pub id: Option<Thing>,
     name: String,
     path: String,
+}
+
+impl TryFrom<TSLibrary> for Library {
+    type Error = String;
+
+    fn try_from(value: TSLibrary) -> Result<Self, Self::Error> {
+        if let Some(index) = value.id.find(":") {
+            let id = value.id.split_at(index);
+            return Ok(Self {
+                id: Some(id.into()),
+                name: value.name,
+                path: value.path,
+            });
+        }
+        Err(String::from("invalid id format found"))
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -56,6 +79,15 @@ pub async fn list_libraries(db: State<'_, Surreal<Db>>) -> Result<Vec<Library>, 
 }
 
 #[tauri::command]
+pub async fn get_library(id: String, db: State<'_, Surreal<Db>>) -> Result<Library, String> {
+    let lib = db
+        .select(("library", id))
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(lib)
+}
+
+#[tauri::command]
 pub async fn delete_library(id: (&str, &str), db: State<'_, Surreal<Db>>) -> Result<(), String> {
     println!("{:?}", id);
     db.delete(id).await.map_err(|e| e.to_string())?;
@@ -63,12 +95,16 @@ pub async fn delete_library(id: (&str, &str), db: State<'_, Surreal<Db>>) -> Res
 }
 
 #[tauri::command]
-pub async fn scan_library(
-    id: (&str, &str),
+pub async fn scan_library_command(
+    id: &str,
     extension: &str,
     db: State<'_, Surreal<Db>>,
+    window: Window,
 ) -> Result<(), String> {
-    let library: Library = db.select(id).await.map_err(|e| e.to_string())?;
+    let library: Library = db
+        .select(("library", id))
+        .await
+        .map_err(|e| e.to_string())?;
 
     for entry in WalkDir::new(&library.path)
         .into_iter()
@@ -107,10 +143,6 @@ pub async fn scan_library(
                 .unwrap();
             tags_to_save.push(t);
         }
-        // let updated_tags: Vec<Future<Tag>> = tags
-        //     .into_iter()
-        //     .map(|tag| db.update(("tag", tag.value)).content(tag))
-        //     .collect();
 
         let to_save = File {
             id: Some(Thing::from(("3dfile", hashed_name_string.as_str()))),
@@ -131,9 +163,13 @@ pub async fn scan_library(
             .await
             .map_err(|e| e.to_string())
             .unwrap();
-        println!("Updated: {:?}", f);
-    }
 
+        if let Some(stl) = f {
+            window
+                .emit("scanned-file", &stl)
+                .map_err(|e| e.to_string())?;
+        }
+    }
     Ok(())
 }
 
