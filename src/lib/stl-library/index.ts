@@ -25,11 +25,3 @@ export async function deleteLibrary(id: string) {
 export async function scanLibrary(id: string, extension: string) {
   await invoke("scan_library_command", { id: id, extension: extension });
 }
-
-export interface STLFile {
-  id: string;
-  name: string;
-  extension: string;
-  path: string;
-  tags: string[];
-}

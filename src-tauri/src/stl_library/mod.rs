@@ -1,3 +1,4 @@
+pub mod files;
 use std::{ffi::OsString, ops::Deref};
 
 use serde::{Deserialize, Serialize};
@@ -5,6 +6,8 @@ use sha2::{Digest, Sha256};
 use surrealdb::{engine::local::Db, sql::Thing, Surreal};
 use tauri::{api::dialog::blocking::FileDialogBuilder, State, Window};
 use walkdir::WalkDir;
+
+use files::{File, Tag};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TSLibrary {
@@ -34,21 +37,6 @@ impl TryFrom<TSLibrary> for Library {
         }
         Err(String::from("invalid id format found"))
     }
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct File {
-    id: Option<Thing>,
-    name: String,
-    extension: String,
-    pub path: String,
-    tags: Vec<Tag>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Tag {
-    id: Option<Thing>,
-    value: String,
 }
 
 #[tauri::command]

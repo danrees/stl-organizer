@@ -1,8 +1,8 @@
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
   import { appWindow } from "@tauri-apps/api/window";
-  import { scanLibrary, type STLLibrary, type STLFile } from "$lib/stl-library";
-  import { emit } from "@tauri-apps/api/event";
+  import { scanLibrary, type STLLibrary } from "$lib/stl-library";
+  import type { STLFile } from "$lib/stl-file";
   import { toastStore } from "@skeletonlabs/skeleton";
 
   let unlisten: () => void;
