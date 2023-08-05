@@ -8,7 +8,7 @@
 <div>
   <ul class="list space-y-2">
     {#each files as file}
-      <li><Card {file} /></li>
+      <li><Card {file} on:tag-clicked /></li>
     {/each}
   </ul>
 </div>

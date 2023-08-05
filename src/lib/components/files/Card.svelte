@@ -1,7 +1,15 @@
 <script lang="ts">
   import type { STLFile } from "$lib/stl-file";
+  import { createEventDispatcher } from "svelte";
 
   export let file: STLFile;
+
+  const dispatch = createEventDispatcher();
+  function clickTag(value: string) {
+    dispatch("tag-clicked", {
+      value: value,
+    });
+  }
 </script>
 
 <div class="card w-full">
@@ -11,7 +19,9 @@
   </dl>
   <div>
     {#each file.tags as tag}
-      <span class="chip variant-filled">{tag.value}</span>
+      <span class="chip variant-filled" on:click={() => clickTag(tag.value)}
+        >{tag.value}</span
+      >
     {/each}
   </div>
 </div>
