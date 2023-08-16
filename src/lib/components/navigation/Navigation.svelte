@@ -10,5 +10,6 @@
   <ul>
     <li><a href="/library" on:click={drawerClose}>Library Management</a></li>
     <li><a href="/files" on:click={drawerClose}>File Management</a></li>
+    <li><a href="/tags" on:click={drawerClose}>Tag Management</a></li>
   </ul>
 </nav>

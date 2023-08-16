@@ -8,10 +8,14 @@ use surrealdb::{
 use tauri::{Event, Manager};
 
 use crate::stl_library::{
-    delete_library, files::list_files, get_library, list_libraries, pick_directory, save_library,
-    scan_library_command, Library, TSLibrary,
+    delete_library,
+    files::{delete_tag, list_files, list_tags},
+    get_library, list_libraries, pick_directory, save_library, scan_library_command, Library,
+    TSLibrary,
 };
 
+mod data;
+mod error;
 mod stl_library;
 
 fn main() {
@@ -61,6 +65,8 @@ fn main() {
             delete_library,
             pick_directory,
             list_files,
+            list_tags,
+            delete_tag,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

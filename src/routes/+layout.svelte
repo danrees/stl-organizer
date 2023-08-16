@@ -8,6 +8,7 @@
     AppBar,
     AppShell,
     Drawer,
+    Modal,
     Toast,
     drawerStore,
   } from "@skeletonlabs/skeleton";
@@ -22,6 +23,7 @@
   <Navigation />
 </Drawer>
 <Toast />
+<Modal />
 <AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64">
   <svelte:fragment slot="header">
     <AppBar>

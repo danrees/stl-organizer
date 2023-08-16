@@ -1,4 +1,5 @@
 pub mod files;
+pub mod tags;
 use std::{ffi::OsString, ops::Deref};
 
 use serde::{Deserialize, Serialize};
@@ -8,6 +9,8 @@ use tauri::{api::dialog::blocking::FileDialogBuilder, State, Window};
 use walkdir::WalkDir;
 
 use files::{File, Tag};
+
+use self::files::{ETag, TagReference};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TSLibrary {
@@ -62,7 +65,6 @@ pub async fn save_library(
 #[tauri::command]
 pub async fn list_libraries(db: State<'_, Surreal<Db>>) -> Result<Vec<Library>, String> {
     let l: Vec<Library> = db.select("library").await.map_err(|e| e.to_string())?;
-    println!("Found: {:?}", l);
     Ok(l)
 }
 
@@ -77,7 +79,6 @@ pub async fn get_library(id: String, db: State<'_, Surreal<Db>>) -> Result<Libra
 
 #[tauri::command]
 pub async fn delete_library(id: (&str, &str), db: State<'_, Surreal<Db>>) -> Result<(), String> {
-    println!("{:?}", id);
     db.delete(id).await.map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -122,14 +123,16 @@ pub async fn scan_library_command(
                 value: entry.as_os_str().to_string_lossy().into_owned(),
             })
             .collect::<Vec<Tag>>();
-        let mut tags_to_save = Vec::new();
+        let mut tags_to_save: Vec<ETag> = Vec::new();
         for tag in tags.iter() {
             let t: Tag = db
                 .update(("tag", tag.value.clone()))
                 .content(tag)
                 .await
                 .unwrap();
-            tags_to_save.push(t);
+            if let Some(id) = t.id {
+                tags_to_save.push(ETag::Reference(id))
+            }
         }
 
         let to_save = File {
@@ -145,6 +148,7 @@ pub async fn scan_library_command(
             tags: tags_to_save,
         };
 
+        println!("Saving: {:?}", to_save);
         let f: Option<File> = db
             .update(("3dfile", &hashed_name_string))
             .content(to_save)

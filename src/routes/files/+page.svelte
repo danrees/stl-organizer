@@ -9,6 +9,7 @@
   $: {
     listFiles().then((f) => {
       files = f.filter((item) => {
+        console.log(item);
         if (tagFilters.length == 0) {
           return true;
         }
