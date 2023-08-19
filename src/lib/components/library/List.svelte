@@ -32,7 +32,8 @@
           <dd class="text-sm text-primary-400">{lib.path}</dd>
         </span>
         <span>
-          <a class="btn" href={`/library/${lib.id.split(":").at(-1)}`}>Edit</a>
+          <a class="btn" href={`/library/${lib.id.split(":").at(-1)}`}>Manage</a
+          >
           <button class="btn btn-sm variant-filled-warning">Delete</button>
         </span>
       </div>

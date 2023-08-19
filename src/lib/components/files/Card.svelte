@@ -12,7 +12,7 @@
   }
 </script>
 
-<div class="card w-full">
+<div class="card card-hover p-4 w-full">
   <dl class="list-dl">
     <dt>{file.name}</dt>
     <dd>{file.path}</dd>

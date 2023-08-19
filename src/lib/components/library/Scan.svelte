@@ -46,12 +46,12 @@
   }
 </script>
 
+<button class="btn variant-filled" on:click={async () => await scan()}
+  >Scan</button
+>
+
 <div class="overflow-x-scroll max-h-screen w-full">
   <pre class="pre">
    {text}
   </pre>
 </div>
-
-<button class="btn variant-filled" on:click={async () => await scan()}
-  >Scan</button
->
