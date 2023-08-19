@@ -6,6 +6,14 @@ export interface STLLibrary {
   path: string;
 }
 
+export interface E {
+  message: string;
+}
+
+export function isE(obj: unknown): obj is E {
+  return (obj as E)?.message !== undefined;
+}
+
 export async function saveLibrary(name: string, path: string) {
   await invoke("save_library", { name: name, path: path });
 }

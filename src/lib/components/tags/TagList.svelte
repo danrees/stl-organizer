@@ -1,30 +1,17 @@
 <script lang="ts">
   import type { Tag } from "$lib/stl-file";
+  import { isE } from "$lib/stl-library";
   import {
     modalStore,
     toastStore,
     type ModalSettings,
   } from "@skeletonlabs/skeleton";
+  import { emit } from "@tauri-apps/api/event";
 
   export let tags: Tag[];
   export let deleteTag: (id: string) => Promise<Tag>;
-  export let updateTags: () => Promise<Tag[]>;
-  interface E {
-    message: string;
-  }
-  function isE(obj: unknown): obj is E {
-    return (obj as E)?.message !== undefined;
-  }
-  const modalSettings: ModalSettings = {
-    type: "confirm",
-    title: "Confirm Delete",
-    body: "Are you sure you want to delete this tag? This will remove this tag from all files as well",
-    response: (r: boolean) => {
-      if (r) {
-        console.log();
-      }
-    },
-  };
+  export let deleteTagChannel: string;
+
   const confirmDelete = async () => {
     return new Promise<boolean>((resolve) => {
       const modalSettings: ModalSettings = {
@@ -53,7 +40,11 @@
             const willDelete = await confirmDelete();
             if (willDelete) {
               try {
-                await deleteTag(tag.id.split(":").at(-1) || "");
+                if (!tag.id) {
+                  throw Error("tag has no id");
+                }
+                await deleteTag(tag?.id.split(":").at(-1) || "");
+                emit(deleteTagChannel, { tag: tag });
               } catch (e) {
                 if (isE(e)) {
                   toastStore.trigger({ message: e.message });
@@ -62,7 +53,6 @@
                 }
               }
             }
-            updateTags();
           }}>Delete</button
         >
       </span>

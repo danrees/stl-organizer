@@ -10,12 +10,13 @@ export type Tag = {
 };
 
 export type ETag = Tag | TagReference;
+
 export interface STLFile {
   id: string;
   name: string;
   extension: string;
   path: string;
-  tags: ETag[];
+  tags: Tag[];
 }
 
 export async function listFiles(): Promise<STLFile[]> {
