@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api/tauri";
+import { writable } from "svelte/store";
 
 export interface STLLibrary {
   id: string;
@@ -6,9 +7,15 @@ export interface STLLibrary {
   path: string;
 }
 
+export type Filter = {
+  selected: boolean;
+} & STLLibrary;
+
 export interface E {
   message: string;
 }
+
+export const filterStore = writable<Filter[]>([]);
 
 export function isE(obj: unknown): obj is E {
   return (obj as E)?.message !== undefined;

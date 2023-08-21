@@ -83,6 +83,12 @@ pub async fn delete_library(id: (&str, &str), db: State<'_, Surreal<Db>>) -> Res
     Ok(())
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct Stores {
+    library: Thing,
+    file: Thing,
+}
+
 #[tauri::command]
 pub async fn scan_library_command(
     id: &str,
@@ -157,6 +163,14 @@ pub async fn scan_library_command(
             .unwrap();
 
         if let Some(stl) = f {
+            db.query("RELATE $library->stores->$file")
+                .bind(Stores {
+                    library: library.clone().id.ok_or(String::from("no library id"))?,
+                    file: stl.id.clone().ok_or(String::from("no file id"))?,
+                })
+                .await
+                .map_err(|e| e.to_string())
+                .unwrap();
             window
                 .emit("scanned-file", &stl)
                 .map_err(|e| e.to_string())?;

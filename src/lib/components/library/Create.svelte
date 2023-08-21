@@ -2,18 +2,23 @@
   import { saveLibrary } from "$lib/stl-library";
   import { open } from "@tauri-apps/api/dialog";
   import { path } from "@tauri-apps/api";
-  import { FileButton } from "@skeletonlabs/skeleton";
-  import { invoke } from "@tauri-apps/api/tauri";
+  import { modalStore, type ModalSettings } from "@skeletonlabs/skeleton";
 
   let name: string | undefined;
   let libPath: string | null;
+  const modalSettings: ModalSettings = {
+    type: "alert",
+    title: "Loading",
+    body: "Loading ...",
+  };
 
   const dirPicker = async () => {
+    modalStore.trigger(modalSettings);
     const resp = await open({ directory: true });
     if (Array.isArray(resp)) {
       return;
     }
-
+    modalStore.close();
     libPath = resp;
     name = resp?.split(path.sep).at(-1);
   };
