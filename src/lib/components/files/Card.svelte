@@ -19,8 +19,8 @@
   </dl>
   <div>
     {#each file.tags as tag}
-      <span class="chip variant-filled" on:click={() => clickTag(tag.value)}
-        >{tag.value}</span
+      <button class="chip variant-filled" on:click={() => clickTag(tag.value)}
+        >{tag.value}</button
       >
     {/each}
   </div>
