@@ -9,7 +9,7 @@ use tauri::{Event, Manager};
 
 use crate::stl_library::{
     delete_library,
-    files::{delete_tag, list_files, list_tags},
+    files::{delete_tag, get_file, list_files, list_tags},
     get_library, list_libraries, pick_directory, save_library, scan_library_command, Library,
     TSLibrary,
 };
@@ -65,6 +65,7 @@ fn main() {
             delete_library,
             pick_directory,
             list_files,
+            get_file,
             list_tags,
             delete_tag,
         ])

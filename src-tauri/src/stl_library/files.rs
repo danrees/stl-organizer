@@ -49,6 +49,12 @@ pub async fn list_files(db: State<'_, Surreal<Db>>) -> Result<Vec<File>, STLErro
 }
 
 #[tauri::command]
+pub async fn get_file(id: &str, db: State<'_, Surreal<Db>>) -> Result<File, STLError> {
+    let result = db.select(("3dfile", id)).await?;
+    Ok(result)
+}
+
+#[tauri::command]
 pub async fn list_tags(db: State<'_, Surreal<Db>>) -> Result<Vec<Tag>, String> {
     let tags: Vec<Tag> = db.select("tag").await.map_err(|e| e.to_string())?;
     Ok(tags)

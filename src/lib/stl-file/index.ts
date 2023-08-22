@@ -17,11 +17,8 @@ export type STLFile = {
   extension: string;
   path: string;
   tags: Tag[];
+  thumbnail?: string;
 };
-
-export type STLFileFilter = {
-  selected: boolean;
-} & STLFile;
 
 export async function listFiles(): Promise<STLFile[]> {
   return await invoke("list_files", {});
@@ -33,4 +30,8 @@ export async function listTags(): Promise<Tag[]> {
 
 export async function deleteTag(id: string): Promise<Tag> {
   return await invoke("delete_tag", { id: id });
+}
+
+export async function getFile(id: string): Promise<STLFile> {
+  return await invoke("get_file", { id: id });
 }

@@ -29,6 +29,8 @@
   },
   "type": "module",
   "dependencies": {
-    "@tauri-apps/api": "^1.4.0"
+    "@tauri-apps/api": "^1.4.0",
+    "@types/three": "^0.155.0",
+    "three": "^0.155.0"
   }
 }

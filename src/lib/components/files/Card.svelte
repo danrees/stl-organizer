@@ -14,7 +14,15 @@
 
 <div class="card card-hover p-4 w-full">
   <dl class="list-dl">
-    <dt>{file.name}</dt>
+    <dt>
+      <div class="w-full flex place-content-between">
+        <span>{file.name}</span>
+        <a
+          class="btn btn-sm variant-filled"
+          href={`/files/${file.id.split(":").at(-1)}`}>Details</a
+        >
+      </div>
+    </dt>
     <dd>{file.path}</dd>
   </dl>
   <div>
