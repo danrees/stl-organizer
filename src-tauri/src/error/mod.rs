@@ -28,3 +28,11 @@ impl From<surrealdb::Error> for STLError {
         }
     }
 }
+
+impl From<std::io::Error> for STLError {
+    fn from(value: std::io::Error) -> Self {
+        Self {
+            message: value.to_string(),
+        }
+    }
+}

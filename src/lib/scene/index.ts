@@ -13,6 +13,7 @@ const createCamera = (el: HTMLCanvasElement) => {
   camera.position.z = 5;
   return camera;
 };
+
 const createScene = (
   el: HTMLCanvasElement,
   window: Window,
@@ -20,9 +21,9 @@ const createScene = (
 ) => {
   const scene = buildScene();
 
-  const renderer = buildRenderer(el, window, path, false);
-
   const camera = createCamera(el);
+  const renderer = buildRenderer(el, window, path, false, camera, scene);
+
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.rotateSpeed = 0.05;
@@ -52,9 +53,11 @@ const buildRenderer = (
   window: Window,
   path: ArrayBuffer,
   preserveDrawingBuffer: boolean,
+  camera: three.PerspectiveCamera,
+  scene: three.Scene,
 ) => {
-  const camera = createCamera(el);
-  const scene = buildScene();
+  // const camera = createCamera(el);
+  // const scene = buildScene();
 
   const renderer = new three.WebGLRenderer({
     antialias: true,
@@ -72,6 +75,7 @@ const buildRenderer = (
     specular: 100,
     shininess: 100,
   });
+
   const mesh = new three.Mesh(geometry, material);
   scene.add(mesh);
   const middle = new three.Vector3();
@@ -100,8 +104,8 @@ const saveImage = (
   callBack: BlobCallback,
 ) => {
   const scene = buildScene();
-  const renderer = buildRenderer(el, window, path, true);
   const camera = createCamera(el);
+  const renderer = buildRenderer(el, window, path, true, camera, scene);
 
   renderer.render(scene, camera);
   el.toBlob(callBack, "img/png");

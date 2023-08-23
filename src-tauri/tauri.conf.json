@@ -27,6 +27,9 @@
         "message": true,
         "open": true,
         "save": false
+      },
+      "window": {
+        "all": true
       }
     },
     "bundle": {
