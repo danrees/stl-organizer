@@ -20,6 +20,10 @@ export type STLFile = {
   thumbnail?: string;
 };
 
+export function getId(file: STLFile): string | undefined {
+  return file.id.split(":")?.at(-1);
+}
+
 export async function listFiles(): Promise<STLFile[]> {
   return await invoke("list_files", {});
 }

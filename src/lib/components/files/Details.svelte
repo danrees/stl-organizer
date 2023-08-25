@@ -1,20 +1,31 @@
 <script lang="ts">
-  import type { STLFile } from "$lib/stl-file";
-  import { loadSTL } from "$lib/preview";
+  import { getId, type STLFile } from "$lib/stl-file";
+  import { loadSTL, saveThumbnail } from "$lib/preview";
   import { onMount } from "svelte";
-  import { createScene } from "$lib/scene";
+  import { createScene, saveImage } from "$lib/scene";
   import { isE } from "$lib/stl-library";
   import { toastStore } from "@skeletonlabs/skeleton";
   import { browser } from "$app/environment";
 
   export let file: STLFile;
+  export let previewWidth: number = 800;
+  export let previewHeight: number = 600;
   let el: HTMLCanvasElement;
+
+  function createThumbnail() {
+    el.toBlob(async (blob) => {
+      const id = getId(file);
+      if (blob && id) {
+        saveThumbnail(id, blob);
+      }
+    }, "image/png");
+  }
 
   onMount(async () => {
     if (browser) {
       try {
         const data = await loadSTL(file.path);
-        const animate = createScene(el, window, data.buffer);
+        const animate = createScene(el, data.buffer);
         animate();
       } catch (e) {
         if (isE(e)) {
@@ -34,5 +45,6 @@
   {#if file.thumbnail}
     <img alt={file.name} src={file.thumbnail} />
   {/if}
-  <canvas bind:this={el}></canvas>
+  <canvas bind:this={el} width={previewWidth} height={previewHeight}></canvas>
+  <button on:click={() => createThumbnail()}>Thumbnail</button>
 </div>

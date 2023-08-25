@@ -36,3 +36,11 @@ impl From<std::io::Error> for STLError {
         }
     }
 }
+
+impl From<base64::DecodeError> for STLError {
+    fn from(value: base64::DecodeError) -> Self {
+        Self {
+            message: value.to_string(),
+        }
+    }
+}

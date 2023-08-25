@@ -14,23 +14,19 @@ const createCamera = (el: HTMLCanvasElement) => {
   return camera;
 };
 
-const createScene = (
-  el: HTMLCanvasElement,
-  window: Window,
-  path: ArrayBuffer,
-) => {
+const createScene = (el: HTMLCanvasElement, path: ArrayBuffer) => {
   const scene = buildScene();
 
   const camera = createCamera(el);
-  const renderer = buildRenderer(el, window, path, false, camera, scene);
+  const renderer = buildRenderer(el, path, false, camera, scene);
 
   let controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.rotateSpeed = 0.05;
+  // controls.rotateSpeed = 0.05;
   controls.dampingFactor = 0.1;
   controls.enableZoom = true;
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 0.75;
+  // controls.autoRotate = true;
+  // controls.autoRotateSpeed = 0.75;
 
   const animate = () => {
     requestAnimationFrame(animate);
@@ -50,7 +46,6 @@ const buildScene = () => {
 
 const buildRenderer = (
   el: HTMLCanvasElement,
-  window: Window,
   path: ArrayBuffer,
   preserveDrawingBuffer: boolean,
   camera: three.PerspectiveCamera,
@@ -64,7 +59,7 @@ const buildRenderer = (
     canvas: el,
     preserveDrawingBuffer: preserveDrawingBuffer,
   });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(el.width, el.height);
 
   const loader = new STLLoader();
 
@@ -99,13 +94,12 @@ const buildRenderer = (
 
 const saveImage = (
   el: HTMLCanvasElement,
-  window: Window,
   path: ArrayBuffer,
   callBack: BlobCallback,
 ) => {
   const scene = buildScene();
   const camera = createCamera(el);
-  const renderer = buildRenderer(el, window, path, true, camera, scene);
+  const renderer = buildRenderer(el, path, true, camera, scene);
 
   renderer.render(scene, camera);
   el.toBlob(callBack, "img/png");
