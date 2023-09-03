@@ -18,15 +18,16 @@ tauri-build = { version = "1.4.0", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.4.0", features = [ "window-all", "dialog-ask", "dialog-message", "dialog-open", "shell-open"] }
-surrealdb = {version = "1.0.0-beta.9", features = ["kv-rocksdb"] }
+surrealdb = {version = "1.0.0-beta.9+20230402", features = ["kv-rocksdb"] }
 walkdir = "2.3.3"
 sha2 = "0.10.7"
 base16ct = { version = "0.2.0", features = ["alloc"] }
 anyhow = "1.0.72"
 base64 = "0.21.2"
+nom = "7.1.3"
 
-[patch.crates-io]
-rocksdb = { path = "../../rust-rocksdb"}
+# [patch.crates-io]
+# rocksdb = { path = "../../rust-rocksdb"}
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.

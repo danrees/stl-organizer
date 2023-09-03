@@ -1,6 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+use config::{load_config_from_db, save_config_from_db, Config};
 use surrealdb::{
     engine::local::{Db, File},
     Surreal,
@@ -56,14 +57,16 @@ fn main() {
             //         });
             //     }
             // });
-
             tauri::async_runtime::block_on(async move {
                 let db = Surreal::new::<File>("../stl.db").await.unwrap();
 
                 db.use_ns("stl_viewer").use_db("libraries").await.unwrap();
 
+                let _config = load_config_from_db(&db).await.unwrap();
+
                 app.manage(db);
             });
+
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![

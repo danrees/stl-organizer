@@ -7,11 +7,20 @@ export async function loadSTL(path: string): Promise<Uint8Array> {
   return bytes;
 }
 
+// TODO: Try to make this function more robust
 export function saveThumbnail(id: string, b: Blob) {
-  const reader = new FileReader();
+  try {
+    const reader = new FileReader();
 
-  reader.onloadend = async () => {
-    await invoke("save_thumbnail", { id: id, data: reader.result });
-  };
-  reader.readAsDataURL(b);
+    reader.onloadend = async () => {
+      try {
+        await invoke("save_thumbnail", { id: id, image: reader.result });
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    reader.readAsDataURL(b);
+  } catch (e) {
+    console.log(e);
+  }
 }

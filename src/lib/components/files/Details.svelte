@@ -16,7 +16,14 @@
     el.toBlob(async (blob) => {
       const id = getId(file);
       if (blob && id) {
-        saveThumbnail(id, blob);
+        try {
+          console.log(blob.size);
+          saveThumbnail(id, blob);
+        } catch (e) {
+          if (isE(e)) {
+            toastStore.trigger({ message: e.message });
+          }
+        }
       }
     }, "image/png");
   }

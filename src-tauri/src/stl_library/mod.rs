@@ -10,6 +10,8 @@ use walkdir::WalkDir;
 
 use files::{File, Tag};
 
+use crate::error::STLError;
+
 use self::files::{ETag, TagReference};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
